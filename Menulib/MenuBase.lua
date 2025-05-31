@@ -63,6 +63,7 @@ function MenuLib.initialize(configOverrides)
             snapDistance = 20,       -- Distance for snapping to edges
             snapToEdges = true, -- Enable edge snapping
             configNames = {"menu_config1.txt","menu_config1.txt","menu_config1.txt"},
+            color = {60, 150, 255, 255},
         },
         tabs = {},
         options = {}
@@ -80,7 +81,7 @@ function MenuLib.initialize(configOverrides)
     MenuLib.draggable = MenuLib.create_draggable("main_menu", MenuLib.config.menu.x, MenuLib.config.menu.y)
 
     -- Load saved config if exists
-    MenuLib.load_config(MenuLib.config.menu.configNames[1])    
+    -- MenuLib.load_config(MenuLib.config.menu.configNames[1])    
     
     return MenuLib.config
 end
@@ -227,17 +228,17 @@ function MenuLib.create_tab(title, x, y, width, height, tab_key, Disabled)
 
     if is_selected then
         render.draw_rectangle(x, y, width, height, 15, 15, 15, 255, 0, true, 5)
-        local text_width = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), title)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, x + (width / 2) - (text_width / 2), y + (height / 2) - 8, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        local text_width = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), title)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, x + (width / 2) - (text_width / 2), y + (height / 2) - 8, 232, 232, 232, 255, 0, 0, 0, 0, 0)
 
-        render.draw_line(x, (y + height) + 5, x + width, (y + height) + 5, 60, 150, 255, 255, 1)
-        render.draw_line(x, (y + height) + 4, x + width, (y + height) + 4, 60, 150, 255, 170, 1)
-        render.draw_line(x, (y + height) + 3, x + width, (y + height) + 3, 60, 150, 255, 85, 1)
+        render.draw_line(x, (y + height) + 5, x + width, (y + height) + 5, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 1)
+        render.draw_line(x, (y + height) + 4, x + width, (y + height) + 4, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 170, 1)
+        render.draw_line(x, (y + height) + 3, x + width, (y + height) + 3, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 85, 1)
 
     else
         render.draw_rectangle(x, y, width, height, 10, 10, 10, 255, 0, true, 5)
-        local text_width = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), title)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, x + (width / 2) - (text_width / 2), y + (height / 2) - 8, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        local text_width = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), title)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, x + (width / 2) - (text_width / 2), y + (height / 2) - 8, 66, 66, 66, 255, 0, 0, 0, 0, 0)
 
         if disabled then
             render.draw_line(x + (width / 2) - (text_width / 2) - 1, y + (height / 2) , x + (width / 2) - (text_width / 2) + text_width + 1, y + (height / 2) , 66, 66, 66, 255, 1)
@@ -259,7 +260,7 @@ end
 
 function MenuLib.create_group(title, x, y, width, height)
     render.draw_rectangle(x, y, width, height, 100, 100, 100, 255, 0, false)
-    render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, x + 5, y - 15, 255, 255, 255, 255, 0, 0, 0, 0, 255)
+    render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, x + 5, y - 15, 255, 255, 255, 255, 0, 0, 0, 0, 0)
 end
 
 function MenuLib.create_optionSelect(title, x, y, item)
@@ -271,14 +272,14 @@ function MenuLib.create_optionSelect(title, x, y, item)
     MenuLib.dropdown_states[item] = MenuLib.dropdown_states[item] or { open = false }
 
     local is_open = MenuLib.dropdown_states[item].open
-    local font = render.create_font(MenuLib.config.menu.font, 10, 200)
+    local font = render.create_font(MenuLib.config.menu.font, 13)
 
     x = x - 2.5 
 
     if is_open or MenuLib.inbox(x, x + 168, (y + 17), (y + 17) + 20) then
-        render.draw_text(font, title, x, y, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, title, x, y, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, title, x, y, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, title, x, y, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
 
@@ -289,16 +290,16 @@ function MenuLib.create_optionSelect(title, x, y, item)
     render.draw_rectangle(x + 1.0, y + 0.5, 167.5, 20, 18, 18, 18, 255, 0, true)
 
     if is_open or MenuLib.inbox(x, x + 168, y, y + 20) then
-        render.draw_text(font, options[selected], x + 5, y + 3, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, options[selected], x + 5, y + 3, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, options[selected], x + 5, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, options[selected], x + 5, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
     -- Draw dropdown arrow
     if is_open then
-        render.draw_text(font, "<", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, "<", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, "v", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, "v", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
 
@@ -330,7 +331,7 @@ function MenuLib.create_optionSelect(title, x, y, item)
             end
 
             render.draw_rectangle(x + 1, option_y, 167.5, 20, 18, 18, 18, a, 0, true)
-            render.draw_text(font, options[i], x + 5, option_y + 3, r, g, b, a, 0, 0, 0, 0, 255)
+            render.draw_text(font, options[i], x + 5, option_y + 3, r, g, b, a, 0, 0, 0, 0, 0)
 
             if is_hovering and input.is_key_pressed(0x01) then
                 MenuLib.config.options[item][1] = i
@@ -343,7 +344,7 @@ function MenuLib.create_optionSelect(title, x, y, item)
 end
 
 function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
-    local font = render.create_font(MenuLib.config.menu.font, 10, 200)
+    local font = render.create_font(MenuLib.config.menu.font, 13)
     local options = MenuLib.config.options[item][2]
     local toggled = MenuLib.config.options[item][3] or {}
 
@@ -356,9 +357,9 @@ function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
 
     -- Title
     if menu_open or MenuLib.inbox(x, x + 168, y + 20, y + 40) then
-        render.draw_text(font, title, x, y, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, title, x, y, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, title, x, y, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, title, x, y, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
     y = y + 17
@@ -369,9 +370,9 @@ function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
     render.draw_rectangle(x + 1.0, y + 0.5, 167.5, 20, 18, 18, 18, 255, 0, true)
 
     if menu_open then
-        render.draw_text(font, "<", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, "<", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, "v", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, "v", x + 155, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
     -- Create a list of selected options
@@ -389,9 +390,9 @@ function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
     end
 
     if menu_open or MenuLib.inbox(x, x + 168, y, y + 20) then
-        render.draw_text(font, display_text, x + 5, y + 3, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, display_text, x + 5, y + 3, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(font, display_text, x + 5, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(font, display_text, x + 5, y + 3, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
 
@@ -431,7 +432,7 @@ function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
 
             -- Text
             local text_color = (is_selected or hovered) and {232, 232, 232, 255} or {66, 66, 66, 255}
-            render.draw_text(font, option_text, x + 5, y + 3, text_color[1], text_color[2], text_color[3], text_color[4], 0, 0, 0, 0, 255)
+            render.draw_text(font, option_text, x + 5, y + 3, text_color[1], text_color[2], text_color[3], text_color[4], 0, 0, 0, 0, 0)
 
             y = y + 22
         end
@@ -454,7 +455,7 @@ function MenuLib.create_slider(title, x, y, min, max, item,r,g,b,a,unit)
     render.draw_rectangle(x + 1 , y + 4 + 0.5, bar_width + 4, 5, 18, 18, 18, 255, 0, true, 2)
 
     --Slider bar
-    render.draw_rectangle(x + 1, y + 4.5, slider_x - (x - 1), 5, 60, 150, 255, 225, 1, true, 2)
+    render.draw_rectangle(x + 1, y + 4.5, slider_x - (x - 1), 5, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 225, 1, true, 2)
 
     --Slider Knob
     render.draw_circle(slider_x, y + 6.5, 5, 255, 255, 255, 255, 1, true)
@@ -468,13 +469,13 @@ function MenuLib.create_slider(title, x, y, min, max, item,r,g,b,a,unit)
 
     -- Draw slider value text
     if is_hovering or MenuLib.dragging_slider == item then
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, x, y - 12, 232, 232, 232, 255, 0, 0, 0, 0, 255)
-        local valueT_x, valueT_y = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), value..unit)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), value..unit, x + bar_width + 5.5 - valueT_x, y - 12, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, x, y - 12, 232, 232, 232, 255, 0, 0, 0, 0, 0)
+        local valueT_x, valueT_y = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), value..unit)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), value..unit, x + bar_width + 5.5 - valueT_x, y - 12, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, x, y - 12, 66, 66, 66, 255, 0, 0, 0, 0, 255)
-        local valueT_x, valueT_y = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), value..unit)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), value..unit, x + bar_width + 5.5 - valueT_x, y - 12, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, x, y - 12, 66, 66, 66, 255, 0, 0, 0, 0, 0)
+        local valueT_x, valueT_y = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), value..unit)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), value..unit, x + bar_width + 5.5 - valueT_x, y - 12, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
 
     if input.is_key_pressed(37) and is_hovering then
@@ -517,8 +518,8 @@ function MenuLib.create_keybind(title, x, y, item)
         display_text = "..."
     end
     
-    local Tx, Ty = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200),  "["..display_text.."]")
-    local title_width, title_height = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), title)
+    local Tx, Ty = render.measure_text(render.create_font(MenuLib.config.menu.font, 13),  "["..display_text.."]")
+    local title_width, title_height = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), title)
 
     local isHovered = false
     if title == "None" then
@@ -530,10 +531,10 @@ function MenuLib.create_keybind(title, x, y, item)
     local color = isHovered and {232, 232, 232, 255} or {66, 66, 66, 255}
 
     if title ~= "None" then
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title .. ":", x - 50, y, color[1], color[2], color[3], color[4], 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title .. ":", x - 50, y, color[1], color[2], color[3], color[4], 0, 0, 0, 0, 0)
     end
 
-    render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), "["..display_text.."]", x + 121 - (Tx), y, color[1], color[2], color[3], color[4], 0, 0, 0, 0, 255)
+    render.draw_text(render.create_font(MenuLib.config.menu.font, 13), "["..display_text.."]", x + 121 - (Tx), y, color[1], color[2], color[3], color[4], 0, 0, 0, 0, 0)
 
     
     if isHovered and input.is_key_pressed(0x01) then
@@ -561,14 +562,15 @@ function MenuLib.create_checkbox(title, x, y, item, r, g, b, a)
     local titlePos = {x = x - 2, y = y}
     local checkboxPos = {x = x + 155, y = y + 2}
     
-    local titleWidth, titleHeight = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), title)
+    local titleWidth, titleHeight = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), title)
+
 
     if MenuLib.inbox(checkboxPos.x, checkboxPos.x + 11, checkboxPos.y, checkboxPos.y + 11) or MenuLib.inbox(titlePos.x, titlePos.x + titleWidth, titlePos.y, titlePos.y + titleHeight) then
-        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, 60, 150, 255, 255, 0, true, 3)
+        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 0, true, 3)
         render.draw_rectangle(checkboxPos.x, checkboxPos.y, 11, 11, 20, 20, 20, 255, 0, true, 3)
 
-        render.draw_line(checkboxPos.x + 2, checkboxPos.y + 6, checkboxPos.x + 4, checkboxPos.y + 8, 60, 150, 255, 255, 2)
-        render.draw_line(checkboxPos.x + 4, checkboxPos.y + 8, checkboxPos.x + 9, checkboxPos.y + 3, 60, 150, 255, 255, 2)
+        render.draw_line(checkboxPos.x + 2, checkboxPos.y + 6, checkboxPos.x + 4, checkboxPos.y + 8, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 1)
+        render.draw_line(checkboxPos.x + 4, checkboxPos.y + 8, checkboxPos.x + 9, checkboxPos.y + 3, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 1)
     else
         render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, 30, 30, 30, 255, 0, true, 3)
         render.draw_rectangle(checkboxPos.x, checkboxPos.y, 11, 11, 20, 20, 20, 255, 0, true, 3)
@@ -576,15 +578,15 @@ function MenuLib.create_checkbox(title, x, y, item, r, g, b, a)
 
     
     if state then
-        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, 60, 150, 255, 225, 0, true, 3)
-        render.draw_line(checkboxPos.x + 2, checkboxPos.y + 6, checkboxPos.x + 4, checkboxPos.y + 8, 20, 20, 20, 255, 2)
-        render.draw_line(checkboxPos.x + 4, checkboxPos.y + 8, checkboxPos.x + 9, checkboxPos.y + 3, 20, 20, 20, 255, 2)
+        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 225, 0, true, 3)
+        render.draw_line(checkboxPos.x + 2, checkboxPos.y + 6, checkboxPos.x + 4, checkboxPos.y + 8, 20, 20, 20, 255, 1)
+        render.draw_line(checkboxPos.x + 4, checkboxPos.y + 8, checkboxPos.x + 9, checkboxPos.y + 3, 20, 20, 20, 255, 1)
 
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, titlePos.x, titlePos.y, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, titlePos.x, titlePos.y, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     elseif MenuLib.inbox(checkboxPos.x, checkboxPos.x + 11, checkboxPos.y, checkboxPos.y + 11) or MenuLib.inbox(titlePos.x, titlePos.x + titleWidth, titlePos.y, titlePos.y + titleHeight) then
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, titlePos.x, titlePos.y, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, titlePos.x, titlePos.y, 232, 232, 232, 255, 0, 0, 0, 0, 0)
     else
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), title, titlePos.x, titlePos.y, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, titlePos.x, titlePos.y, 66, 66, 66, 255, 0, 0, 0, 0, 0)
     end
     
     if (MenuLib.inbox(checkboxPos.x, checkboxPos.x + 11, checkboxPos.y, checkboxPos.y + 11) or MenuLib.inbox(titlePos.x, titlePos.x + titleWidth, titlePos.y, titlePos.y + titleHeight)) and input.is_key_pressed(0x01) then
@@ -675,16 +677,16 @@ function MenuLib.create_colorpicker(title, label_x, label_y, configKey, x, y)
     local picker_y = (y and y + 25) or (label_y and label_y + 30) or 0
     picker_x = picker_x - 5
 
-    local TW, TH = render.measure_text(render.create_font(MenuLib.config.menu.font, 10, 200), title)
+    local TW, TH = render.measure_text(render.create_font(MenuLib.config.menu.font, 13), title)
 
     local previewpos = {x = label_x + 154, y = label_y + 5}
 
     if string.sub(title, 1, 2) ~= "##" then
 
         if color[5] or (MenuLib.inbox(label_x + 154, label_x + 167, label_y + 5, label_y + 18) or MenuLib.inbox(label_x  - 2, label_x - 2 + TW, label_y + 5, label_y + 5 + TH)) then
-            render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 10), title, label_x - 2, label_y + 5, 232, 232, 232, 255, 0, 0, 0, 0, 255)
+            render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, label_x - 2, label_y + 5, 232, 232, 232, 255, 0, 0, 0, 0, 0)
         else
-            render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 10), title, label_x - 2, label_y + 5, 66, 66, 66, 255, 0, 0, 0, 0, 255)
+            render.draw_text(render.create_font(MenuLib.config.menu.font, 13), title, label_x - 2, label_y + 5, 66, 66, 66, 255, 0, 0, 0, 0, 0)
 
         end
 
@@ -729,7 +731,7 @@ function MenuLib.create_colorpicker(title, label_x, label_y, configKey, x, y)
             title = string.sub(title, 3)
         end
 
-        render.draw_text(render.create_font("Verdana", 10, 200), title, picker_x, picker_y - 18, 255, 255, 255, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font("Verdana", 13), title, picker_x, picker_y - 18, 255, 255, 255, 255, 0, 0, 0, 0, 0)
         
         picker_y = picker_y + 20
 
@@ -1087,18 +1089,18 @@ function MenuLib.create_config_buttons(x, y, r, g, b, a)
 
     for _, config_name in ipairs(config_names) do
         -- Draw config label
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), config_name, current_x + 10, y, 255, 255, 255, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), config_name, current_x + 10, y, 255, 255, 255, 255, 0, 0, 0, 0, 0)
 
         -- Load Button for current config
         render.draw_rectangle(current_x, y + text_offset + 20, button_width, button_height, r, g, b, a, 0, true)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), "Load", current_x + 10, y + text_offset + 25, 255, 255, 255, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), "Load", current_x + 10, y + text_offset + 25, 255, 255, 255, 255, 0, 0, 0, 0, 0)
         if MenuLib.inbox(current_x, current_x + button_width, y + text_offset + 20, y + text_offset + 45) and input.is_key_pressed(0x01) then
             MenuLib.load_config(MenuLib.config.menu.configNames[_])
         end
 
         -- Save Button for current config
         render.draw_rectangle(current_x, y + text_offset + 50, button_width, button_height, r, g, b, a, 0, true)
-        render.draw_text(render.create_font(MenuLib.config.menu.font, 10, 200), "Save", current_x + 10, y + text_offset + 55, 255, 255, 255, 255, 0, 0, 0, 0, 255)
+        render.draw_text(render.create_font(MenuLib.config.menu.font, 13), "Save", current_x + 10, y + text_offset + 55, 255, 255, 255, 255, 0, 0, 0, 0, 0)
         if MenuLib.inbox(current_x, current_x + button_width, y + text_offset + 50, y + text_offset + 75) and input.is_key_pressed(0x01) then
             MenuLib.save_config(MenuLib.config.menu.configNames[_])
         end
