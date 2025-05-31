@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-field, lowercase-global
 local MenuLib = {
-    version = "1.0",
+    version = "1.1",
     author = "Starz, edited by Casey",
     description = "A customizable draggable menu library for perception.cx api"
 }
