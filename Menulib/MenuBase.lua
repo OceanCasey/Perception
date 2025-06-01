@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-field, lowercase-global
 local MenuLib = {
-    version = "1.1",
+    version = "1.2",
     author = "Starz, edited by Casey",
     description = "A customizable draggable menu library for perception.cx api"
 }
@@ -13,7 +13,7 @@ MenuLib.keyNames = {
     "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
     "Space", "Enter", "Shift", "Ctrl", "Alt", "Tab", "Caps", "Back", "Delete", "Insert",
     "Home", "Left", "Up", "Right", "Down",
-    "Mouse1", "Mouse2", "Mouse3", "Mouse5", "Mouse4"
+    "Mouse1", "Mouse2", "Mouse3", "Mouse4", "Mouse5"
 }
 
 -- Define key codes that correspond to the key names
