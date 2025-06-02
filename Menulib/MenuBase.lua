@@ -991,7 +991,7 @@ function MenuLib.save_config(Name)
     
     -- Write to file
     local success, err = pcall(function()
-        fs.write_to_file(Name, configData)
+        fs.write_to_file(Name, net.base64_encode(configData))
     end)
     
     if not success then
@@ -1004,6 +1004,7 @@ end
 function MenuLib.load_config(Name)
     if fs.does_file_exist(Name) then
         local configData = fs.read_from_file(Name)
+        configData = net.base64_decode(configData)
         for line in configData:gmatch("[^\n]+") do
             local key, value = line:match("(.-)=(.+)")
             if key and value then
