@@ -286,7 +286,7 @@ function MenuLib.create_optionSelect(title, x, y, item)
     y = y + 17
 
     -- Draw main box
-    render.draw_rectangle(x + 0.5, y - 0.5, 169, 20 + 2, 30, 30, 30, 255, 0, true)
+    render.draw_rectangle(x + 0.5, y - 0.5, 169, 20 + 2, 45, 45, 45, 255, 0, true)
     render.draw_rectangle(x + 1.0, y + 0.5, 167.5, 20, 18, 18, 18, 255, 0, true)
 
     if is_open or MenuLib.inbox(x, x + 168, y, y + 20) then
@@ -366,7 +366,7 @@ function MenuLib.create_multiOption(title, x, y, item, r, g, b, a)
 
     -- Selection box
     local box_w, box_h = 165, 20
-    render.draw_rectangle(x + 0.5, y - 0.5, 169, 20 + 2, 30, 30, 30, 255, 0, true)
+    render.draw_rectangle(x + 0.5, y - 0.5, 169, 20 + 2, 45, 45, 45, 255, 0, true)
     render.draw_rectangle(x + 1.0, y + 0.5, 167.5, 20, 18, 18, 18, 255, 0, true)
 
     if menu_open then
@@ -572,7 +572,7 @@ function MenuLib.create_checkbox(title, x, y, item, r, g, b, a)
         render.draw_line(checkboxPos.x + 2, checkboxPos.y + 6, checkboxPos.x + 4, checkboxPos.y + 8, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 1)
         render.draw_line(checkboxPos.x + 4, checkboxPos.y + 8, checkboxPos.x + 9, checkboxPos.y + 3, MenuLib.config.menu.color[1], MenuLib.config.menu.color[2], MenuLib.config.menu.color[3], 255, 1)
     else
-        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, 30, 30, 30, 255, 0, true, 3)
+        render.draw_rectangle(checkboxPos.x - 1, checkboxPos.y - 1, 13, 13, 45, 45, 45, 255, 0, true, 3)
         render.draw_rectangle(checkboxPos.x, checkboxPos.y, 11, 11, 20, 20, 20, 255, 0, true, 3)
     end
 
@@ -725,7 +725,7 @@ function MenuLib.create_colorpicker(title, label_x, label_y, configKey, x, y)
 
         render.draw_rectangle(picker_x - 15, picker_y - 5, 171, 181, 23, 23, 23, 255, 0, true, 3)
         render.draw_rectangle(picker_x - 15, picker_y - 25, 171, 30, 15, 15, 15, 255, 0, true, 3)
-        render.draw_line(picker_x - 15, picker_y + 5, (picker_x - 15) + 171, (picker_y + 5), 30, 30, 30, 255, 1)
+        render.draw_line(picker_x - 15, picker_y + 5, (picker_x - 15) + 171, (picker_y + 5), 45, 45, 45, 255, 1)
 
         if string.sub(title, 1, 2) == "##" then
             title = string.sub(title, 3)
@@ -784,7 +784,7 @@ function MenuLib.create_colorpicker(title, label_x, label_y, configKey, x, y)
         end
 
         -- Draw Alpha Bar
-        render.draw_rectangle(picker_x, picker_y + color_field_height + 6, alpha_bar_width, 9, 30, 30, 30, 255, 0, true)
+        render.draw_rectangle(picker_x, picker_y + color_field_height + 6, alpha_bar_width, 9, 45, 45, 45, 255, 0, true)
         render.draw_rectangle(picker_x, picker_y + color_field_height + 6, (color[4] / 255) * alpha_bar_width, 9, color[1], color[2], color[3], color[4], 0, true)
 
         if mouse_x >= picker_x and mouse_x <= picker_x + color_field_width and mouse_y >= picker_y and mouse_y <= picker_y + color_field_height then
@@ -1001,6 +1001,61 @@ function MenuLib.save_config(Name)
     end
 end
 
+function MenuLib.export_config(Name)
+    local configData = ""
+    
+    -- Helper function to properly convert values for saving
+    local function valueToString(val)
+        if type(val) == "boolean" then
+            return val and "true" or "false"
+        end
+        return tostring(val)
+    end
+
+    -- Save menu properties
+    configData = configData .. "menu_x=" .. MenuLib.config.menu.x .. "\n"
+    configData = configData .. "menu_y=" .. MenuLib.config.menu.y .. "\n"
+    configData = configData .. "menu_isVisible=" .. valueToString(MenuLib.config.menu.isVisible) .. "\n"
+    configData = configData .. "menu_snapToEdges=" .. valueToString(MenuLib.config.menu.snapToEdges) .. "\n"
+    
+    -- Save tabs state
+    for tabName, state in pairs(MenuLib.config.tabs) do
+        configData = configData .. "tab_" .. tabName .. "=" .. valueToString(state[1]) .. "\n"
+    end
+    
+    -- Save options
+    for key, value in pairs(MenuLib.config.options) do
+        if type(value) == "table" then
+            local values = {}
+            for i, v in ipairs(value) do
+                if type(v) == "table" then
+                    local subvalues = {}
+                    for _, sub in ipairs(v) do
+                        table.insert(subvalues, valueToString(sub))
+                    end
+                    table.insert(values, table.concat(subvalues, ","))
+                else
+                    table.insert(values, valueToString(v))
+                end
+            end
+            configData = configData .. key .. "=" .. table.concat(values, "|") .. "\n"
+        else
+            configData = configData .. key .. "=" .. valueToString(value) .. "\n"
+        end
+    end
+    
+    -- Write to file
+    local success, err = pcall(function()
+        input.set_clipboard(net.base64_encode(configData))
+    end)
+    
+    if not success then
+        engine.log("Failed to export ".. Name .. ": " .. tostring(err), 255, 0, 0, 255)
+    else
+        engine.log(Name .. " exported successfully", 255, 255, 255, 255)
+    end
+end
+
 function MenuLib.load_config(Name)
     if fs.does_file_exist(Name) then
         local configData = fs.read_from_file(Name)
@@ -1074,7 +1129,81 @@ function MenuLib.load_config(Name)
             end
         end
     end
-    engine.log(Name .. " loaded successfully\n\n", 255, 255, 255, 255)
+    engine.log(Name .. " imported successfully\n\n", 255, 255, 255, 255)
+end
+
+function MenuLib.import_config(Name)
+    local configData = input.get_clipboard()
+    configData = net.base64_decode(configData)
+    for line in configData:gmatch("[^\n]+") do
+        local key, value = line:match("(.-)=(.+)")
+        if key and value then
+            -- Handle menu properties
+            if key == "menu_x" then
+                MenuLib.config.menu.x = tonumber(value)
+            elseif key == "menu_y" then
+                MenuLib.config.menu.y = tonumber(value)
+            elseif key == "menu_isVisible" then
+                MenuLib.config.menu.isVisible = value == "true"
+            elseif key == "menu_snapToEdges" then
+                MenuLib.config.menu.snapToEdges = value == "true"
+            
+            -- Handle tabs
+            elseif key:find("^tab_") then
+                local tabName = key:sub(5)
+                if MenuLib.config.tabs[tabName] then
+                    MenuLib.config.tabs[tabName][1] = value == "true"
+                end
+            
+            -- Handle options - this is where we fix boolean conversion
+            else
+                local parts = {}
+                for v in value:gmatch("[^|]+") do
+                    if v:find(",") then
+                        local subparts = {}
+                        for sub in v:gmatch("[^,]+") do
+                            -- Convert string booleans to real booleans
+                            if sub == "true" then
+                                table.insert(subparts, true)
+                            elseif sub == "false" then
+                                table.insert(subparts, false)
+                            else
+                                -- Try to convert to number, fall back to string
+                                local num = tonumber(sub)
+                                table.insert(subparts, num or sub)
+                            end
+                        end
+                        table.insert(parts, subparts)
+                    else
+                        -- Handle single values (like checkbox_example)
+                        if v == "true" then
+                            table.insert(parts, true)
+                        elseif v == "false" then
+                            table.insert(parts, false)
+                        else
+                            local num = tonumber(v)
+                            table.insert(parts, num or v)
+                        end
+                    end
+                end
+                
+                -- Reconstruct the exact table structure
+                if MenuLib.config.options[key] then
+                    -- Update existing table to preserve references
+                    for i = 1, #parts do
+                        if MenuLib.config.options[key][i] ~= nil then
+                            MenuLib.config.options[key][i] = parts[i]
+                        else
+                            MenuLib.config.options[key][i] = parts[i]
+                        end
+                    end
+                else
+                    MenuLib.config.options[key] = parts
+                end
+            end
+        end
+    end
+    engine.log(Name .. " imported successfully\n\n", 255, 255, 255, 255)
 end
 
 function MenuLib.create_config_buttons(x, y, r, g, b, a)
